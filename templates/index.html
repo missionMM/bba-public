@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BBA b1</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='main.css') }}" />
+  </head>
+  <body>
+	
+    <div class="theme-dark">
+		<center>
+			<br>
+			<h1 class="title">BBA (Binary Bloom Algorithm)</h1>
+			<a href="#" class="button is-info js-modal-trigger" data-target="search-modal">Generate Key</a>
+			<hr>
+		</center>
+			<form class="key-form" action="/" method="post" enctype="multipart/form-data">
+				<center><h1>Enter Cryptography Details</h1></center>
+					<br>
+					<div id="file-js-example" class="file has-name is-info">
+						<label class="file-label">
+						  <input class="file-input" type="file" name="file" >
+						  <span class="file-cta">
+							<span class="file-icon">
+							  <i class="fas fa-upload"></i>
+							</span>
+							<span class="file-label"> Choose key file.. </span>
+						  </span>
+						  <span class="file-name"> No file uploaded </span>
+						</label>
+					  </div>
+					  
+					  <div class="field is-grouped">
+						<div class="control">
+						  <button class="button is-info" type="submit">Upload</button>
+						</div>
+						
+					</div>
+				</form>
+
+		<hr>
+		<center><h1 class="title">Action Area</h1></center>
+		<form action="/cryptography" class="key-form" method="post">
+			<div class="field">
+				<label class="label">String</label>
+				<div class="control">
+					<textarea class="textarea" name="string" placeholder="Enter the string here"></textarea>
+				</div>
+				</div>
+
+				<div class="field">
+				<label class="label">Action</label>
+				<div class="control">
+					<div class="select">
+					<select name="action">
+						<option value="enc">Encrypt</option>
+						<option value="dec">Decrypt</option>
+
+					</select>
+					</div>
+				</div>
+				</div>
+
+				<button type="submit" class="button is-info">Submit</button>
+		</form>
+		<center>
+			{% if msg %}
+			<br>
+			<article class="message {{msgType}}">
+					<div class="message-header">
+						<p>Output</p>
+						<!-- <button class="delete" aria-label="delete"></button> -->
+					</div>
+					<div class="message-body" >
+						<p id="msg">{{msg}}</p>
+					</div>
+				</article>
+				<button class="button is-info " id="copy-btn-msg">Copy</button>
+				{%endif%}
+			{%if session['filename']%}
+				<br>
+				<p>Key in Session : {{session['filename']}}</p> <br>
+				<a class="button is-danger is-dark" href="clear-session">End Session<a>
+			{%endif%}
+			<br>
+		</center>
+		<br>
+	</div>
+
+	<!-- search modal -->
+	<div class="modal theme-dark" id="search-modal">
+		<div class="modal-background"></div>
+		<div class="modal-card">
+		  <header class="modal-card-head">
+			<p class="modal-card-title">Search</p>
+			<button class="delete" aria-label="close"></button>
+		  </header>
+		  <section class="modal-card-body">
+			  
+			  <form action="/gen-key" method="post">
+				  <div class="field">
+					  <label class="label">Enter the key</label>
+					  <div class="control">
+						<input class="input" autocomplete="off" type="text" name="key" placeholder="Enter the Key">
+					  </div>
+				  </div>
+
+				  <div class="field">
+					<label class="label">Enter the size</label>
+					<div class="control">
+					  <input class="input" autocomplete="off" type="text" name="size" placeholder="Enter the size">
+					</div>
+				</div>
+					
+					
+					<div class="field is-grouped">
+					  <div class="control">
+						<button class="button is-info" type="submit">Generate</button>
+					  </div>
+					  
+				  </div>
+			  </form>
+
+			</section>
+			<footer class="modal-card-foot">
+			  <div class="buttons">
+				<button class="button is-success">Save changes</button>
+				<button class="button">Cancel</button>
+			  </div>
+			</footer>
+		</div>
+	  </div>
+	
+</body>
+<script src="{{url_for('static',filename='/js/jquery.js')}}"></script>
+<script>
+    $("document").ready(function(){
+        $("#copy-btn-msg").click(function(){
+            var text = $("#msg").text();
+            console.log("click")
+            var tempInput = $("<input>");
+            tempInput.val(text);
+            $('body').append(tempInput);
+            tempInput.select()
+            document.execCommand("copy");
+            tempInput.remove()
+        })
+    })
+</script>
+<script>
+	const fileInput = document.querySelector("#file-js-example input[type=file]");
+  fileInput.onchange = () => {
+    if (fileInput.files.length > 0) {
+      const fileName = document.querySelector("#file-js-example .file-name");
+      fileName.textContent = fileInput.files[0].name;
+    }
+  };
+  document.addEventListener("DOMContentLoaded", () => {
+      // Functions to open and close a modal
+      function openModal($el) {
+        $el.classList.add("is-active");
+      }
+
+      function closeModal($el) {
+        $el.classList.remove("is-active");
+      }
+
+      function closeAllModals() {
+        (document.querySelectorAll(".modal") || []).forEach(($modal) => {
+          closeModal($modal);
+        });
+      }
+
+      // Add a click event on buttons to open a specific modal
+      (document.querySelectorAll(".js-modal-trigger") || []).forEach(
+        ($trigger) => {
+          const modal = $trigger.dataset.target;
+          const $target = document.getElementById(modal);
+
+          $trigger.addEventListener("click", () => {
+            openModal($target);
+          });
+        }
+      );
+
+      // Add a click event on various child elements to close the parent modal
+      (
+        document.querySelectorAll(
+          ".modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button"
+        ) || []
+      ).forEach(($close) => {
+        const $target = $close.closest(".modal");
+
+        $close.addEventListener("click", () => {
+          closeModal($target);
+        });
+      });
+
+      // Add a keyboard event to close all modals
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeAllModals();
+        }
+      });
+    });
+</script>
+</html>

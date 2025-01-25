@@ -1,0 +1,24 @@
+@import 'bulma/css/bulma.css';
+
+*{
+overflow-y:scroll;
+}
+
+.key-form{
+    width: 50%;
+    margin-left: 25%;
+}
+
+.message{
+    width: 50%;
+}
+
+@media (max-width:510px){
+    .key-form{
+        width: 90%;
+        margin-left: 5%;
+    }
+    .message{
+        width: 90%;
+    }
+}
