@@ -1,6 +1,6 @@
 import json
 
-
+# custom file extension (.bba)
 class FileDict:
 
     def __init__(self,filename):
